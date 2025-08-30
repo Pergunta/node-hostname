@@ -10,7 +10,7 @@ spec:
     namespace: node-hostname
   source:
     repoURL: https://github.com/Pergunta/node-hostname.git      
-    path: deployment/prod                   
+    path: deployment                
     targetRevision: prod       
   syncPolicy:
     automated:
