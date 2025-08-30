@@ -1,0 +1,11 @@
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: node-hostname-cert
+  labels:
+    app.kubernetes.io/name: node-hostname
+    app.kubernetes.io/managed-by: argocd
+spec:
+  domains:
+    - 34.144.225.147.sslip.io  
+

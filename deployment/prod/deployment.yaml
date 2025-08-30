@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-hostname
+  labels:
+    app.kubernetes.io/name: node-hostname
+    app.kubernetes.io/managed-by: argocd
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: node-hostname
+  template:
+    metadata:
+      labels:
+        app: node-hostname
+        app.kubernetes.io/name: node-hostname
+        app.kubernetes.io/managed-by: argocd
+    spec:
+      containers:
+        - name: app
+          image: europe-west1-docker.pkg.dev/fiery-azimuth-470410-b6/nh-docker/node-hostname # updated tag by kustomize
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet: { path: "/", port: 8080 }
+            initialDelaySeconds: 3
+            periodSeconds: 5
+          livenessProbe:
+            httpGet: { path: "/", port: 8080 }
+            initialDelaySeconds: 10
+            periodSeconds: 10

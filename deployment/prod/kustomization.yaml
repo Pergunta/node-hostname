@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: node-hostname
+resources:
+  - ../common/namespace.yaml
+  - ../common/service.yaml
+  - ../common/argocd.yaml
+  - deployment.yaml
+  - managedcertificate.yaml
+  - ingress.yaml
+images:
+  - name: europe-west1-docker.pkg.dev/fiery-azimuth-470410-b6/nh-docker/node-hostname
+    newTag: v0.0.0   # CI will update this to the new image tag

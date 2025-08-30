@@ -7,18 +7,11 @@ spec:
   project: default
   destination:
     server: https://kubernetes.default.svc
-    namespace: app-prod
+    namespace: node-hostname
   source:
-    repoURL: https://github.com/Pergunta/node-hostname.git  
-    targetRevision: main
-    path: charts/node-hostname
-    helm:
-      valueFiles: [values.yaml]
-      parameters:
-        - name: image.repository
-          value: europe-west1-docker.pkg.dev/fiery-azimuth-470410-b6/nh-docker/node-hostname
-        - name: image.tag
-          value: v0.0.1
+    repoURL: https://github.com/Pergunta/node-hostname.git      
+    path: deployment/prod                   
+    targetRevision: prod       
   syncPolicy:
     automated:
       prune: true
