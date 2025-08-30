@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: node-hostname
+  annotations:
+    kubernetes.io/ingress.class: "gce"
+    networking.gke.io/managed-certificates: "node-hostname-cert"
+    kubernetes.io/ingress.global-static-ip-name: "app-ingress-ip"
+  labels:
+    app.kubernetes.io/name: node-hostname
+    app.kubernetes.io/managed-by: argocd
+spec:
+  rules:
+    - host: 34.144.225.147.sslip.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: node-hostname
+                port:
+                  number: 80

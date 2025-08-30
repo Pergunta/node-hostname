@@ -1,0 +1,68 @@
+name: release-main
+on:
+  push:
+    branches: ["prod"]
+
+jobs:
+  build-push-bump:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: write       # to commit the kustomize update
+
+    env:
+      GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
+      GCP_REGION:     ${{ vars.GCP_REGION }}       # e.g. europe-west1
+      ARTIFACT_REPO:  ${{ vars.ARTIFACT_REPO }}    # e.g. nh-docker
+      IMAGE_NAME:     node-hostname
+      KUSTOMIZE_DIR:  deployment/prod
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Auth to GCP via Workload Identity Federation (no JSON key files)
+      - uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_ID_PROVIDER }}
+          service_account: ${{ secrets.GCP_SA_EMAIL }}
+
+      - uses: google-github-actions/setup-gcloud@v2
+
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker "${GCP_REGION}-docker.pkg.dev" -q
+
+      - name: Compute immutable tag
+        id: version
+        run: |
+          echo "tag=sha-${GITHUB_SHA::12}" >> "$GITHUB_OUTPUT"
+
+      - name: Build & push (immutable + channel tag)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ env.GCP_REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.ARTIFACT_REPO }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.tag }}
+            ${{ env.GCP_REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.ARTIFACT_REPO }}/${{ env.IMAGE_NAME }}:prod
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Install yq
+        uses: dcarbone/install-yq-action@v1.1.1
+        with:
+          version: v4.44.3
+          arch: amd64
+          path: /usr/local/bin
+
+      - name: Bump Kustomize newTag to immutable tag
+        env:
+          IMG: ${{ env.GCP_REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.ARTIFACT_REPO }}/${{ env.IMAGE_NAME }}
+          NEW_TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          FILE="${KUSTOMIZE_DIR}/kustomization.yaml"
+          yq -i '(.images[] | select(.name == env(IMG)).newTag) = env(NEW_TAG)' "$FILE"
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add "$FILE"
+          git commit -m "deploy: ${NEW_TAG}"
+          git push
