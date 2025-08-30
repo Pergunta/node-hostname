@@ -12,8 +12,8 @@ jobs:
 
     env:
       GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
-      GCP_REGION:     ${{ vars.GCP_REGION }}       # e.g. europe-west1
-      ARTIFACT_REPO:  ${{ vars.ARTIFACT_REPO }}    # e.g. nh-docker
+      GCP_REGION:     ${{ vars.GCP_REGION }}       
+      ARTIFACT_REPO:  ${{ vars.ARTIFACT_REPO }}   
       IMAGE_NAME:     node-hostname
       KUSTOMIZE_DIR:  deployment/prod
 
@@ -44,8 +44,6 @@ jobs:
           tags: |
             ${{ env.GCP_REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.ARTIFACT_REPO }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.tag }}
             ${{ env.GCP_REGION }}-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/${{ env.ARTIFACT_REPO }}/${{ env.IMAGE_NAME }}:prod
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
 
       - name: Install yq
         uses: dcarbone/install-yq-action@v1.1.1
