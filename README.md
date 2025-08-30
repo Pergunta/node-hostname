@@ -6,7 +6,7 @@
 
 Production-grade platform engineering solution demonstrating modern DevOps practices with a fully private GKE cluster, GitOps deployment strategy, and enterprise-level security.
 
-### ✨ Key Features
+###  Key Features
 
 - 🔒 **Fully Private GKE Cluster** - No public endpoint, accessed via Fleet/Connect Gateway
 - 🏗️ **Infrastructure as Code** - Complete Terraform automation with remote state in GCS
@@ -95,8 +95,8 @@ Production-grade platform engineering solution demonstrating modern DevOps pract
 
 ## 🚦 Live Demo
 
-🌐 **Application URL**: https://34.144.225.147.sslip.io  
-📊 **Status**: ![Live](https://img.shields.io/badge/status-live-green)
+ **Application URL**: https://34.144.225.147.sslip.io  
+ **Status**: ![Live](https://img.shields.io/badge/status-live-green)
 
 ## 📁 Repository Structure
 
@@ -326,19 +326,7 @@ kubectl scale deployment/node-hostname --replicas=5 -n node-hostname
 - ✅ **Resource Limits** - Memory and CPU constraints
 - ✅ **Network Policies** - Ready to implement
 
-## 💰 Cost Optimization
 
-With GCP $300 free credits:
-
-| Resource | Cost/Day | Cost/Month |
-|----------|----------|------------|
-| GKE Cluster (2 nodes) | ~$4 | ~$120 |
-| Load Balancer | ~$0.75 | ~$23 |
-| NAT Gateway | ~$1.50 | ~$45 |
-| Artifact Registry | ~$0.10 | ~$3 |
-| **Total** | **~$6.35** | **~$191** |
-
-**Free tier duration**: ~45-50 days
 
 ## 🧹 Cleanup
 
