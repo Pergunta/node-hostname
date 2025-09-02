@@ -7,4 +7,4 @@ resources:
   - ingress.yaml
 images:
   - name: europe-west1-docker.pkg.dev/fiery-azimuth-470410-b6/nh-docker/node-hostname
-    newTag: sha-e58833119d43 # CI will update this to the new image tag
+    newTag: sha-1be284a94fd4 # CI will update this to the new image tag
